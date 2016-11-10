@@ -1,0 +1,100 @@
+text,label
+元気ですか？,zatsudan
+最近どう？ ,zatsudan
+ロンドンの天気教えて    ,notzatsudan
+最近仕事うまくいってる？  ,zatsudan
+火花はどう思う？      ,zatsudan
+天気がいいですね。     ,zatsudan
+日本で一番人気のある女優は誰ですか？    ,notzatsudan
+ポケモンゴーは楽しいですか。,zatsudan
+何か、良い話ない？     ,zatsudan
+ポケモンはゼニガメが好きです,zatsudan
+明日、飲みに行きませんか。 ,notzatsudan
+ペットを飼っていますか？  ,notzatsudan
+すぐに返信をください。   ,notzatsudan
+昨日ご飯なに食べた？    ,zatsudan
+好きな俳優の名前は？    ,zatsudan
+出身はどちらですか？    ,zatsudan
+誕生日っていつだっけ？   ,zatsudan
+家から一番近い映画館ってどこ,notzatsudan
+明日の１０時にまた連絡してください。    ,zatsudan
+1ドルは何円ですか？    ,notzatsudan
+ドラゴンボールは海外でも人気がありますか？ ,notzatsudan
+最近、ついてない。     ,zatsudan
+一番好きな季節は？     ,zatsudan
+国会議事堂はどの方向ですか？,notzatsudan
+この料理は誰が作ったのですか,notzatsudan
+VR体験したことある？   ,zatsudan
+近くにカレーが美味しいお店知らない？    ,notzatsudan
+USJって8月やっぱり混んでるかな？    ,notzatsudan
+おなか空いた,zatsudan
+疲れたー。 ,zatsudan
+カープ今日勝ったかな？   ,zatsudan
+お疲れ様です,zatsudan
+体重は何キロですか？    ,notzatsudan
+待ち合わせの約束は何時ですか,notzatsudan
+昨日おもしろいテレビ番組あった？      ,zatsudan
+今日暑いね ,zatsudan
+旅をするならどこ行きたい？ ,zatsudan
+女子高生はかわいいです。  ,zatsudan
+今日の晩御飯はカレーです。 ,zatsudan
+最近太ってきました。    ,zatsudan
+今日は勉強会です。     ,zatsudan
+ドリアが大好きです。    ,zatsudan
+私は掃除が苦手です。    ,zatsudan
+日本の総理大臣は誰ですか？ ,notzatsudan
+一番好きなアイドルは誰ですか,notzatsudan
+好きなタイプの女性はどんな女性ですか？   ,zatsudan
+プログラムで一番人気のある言語はなんですか？,notzatsudan
+世界で一番高い山はどこですか,notzatsudan
+皇帝ペンギンとはなんですか？,notzatsudan
+雑談とはいったいなんですか？,notzatsudan
+ミニスカとはなんですか？  ,notzatsudan
+一番暑い国はどこですか？  ,notzatsudan
+美味しいカレーの作り方を教えてください。  ,notzatsudan
+携帯電話料金を安くする方法を教えてください。,notzatsudan
+亀って英語でなんて言うの？ ,notzatsudan
+これは何の匂いですか？   ,notzatsudan
+そのカバンはどこで買ったのですか      ,notzatsudan
+付き合ってますか？     ,zatsudan
+最近の健康はどう？     ,zatsudan
+今日は星がみえるかなぁ   ,zatsudan
+トランプが大統領になったら大変そうだけどどう,notzatsudan
+ポケモンGOって面白そうね ,zatsudan
+一番エロい人って誰?    ,notzatsudan
+都知事選挙は面白いですね.アホばっかりで ,zatsudan
+カラオケ行きたいな？    ,zatsudan
+カレーの簡単レシピを教えて？,notzatsudan
+しりとりしよう。リンゴ。  ,zatsudan
+おやすみ。 ,zatsudan
+浅田彰の本は難解だ。    ,zatsudan
+会社、辞めたい。      ,zatsudan
+今日の洋服似合ってますね  ,zatsudan
+家族の状況はどうですか？  ,zatsudan
+ピンクフロイドはいいよね。 ,zatsudan
+町田市って神奈川県じゃないの,zatsudan
+足立区、北区って埼玉県だっけ,notzatsudan
+何か歌ってよ,zatsudan
+通るときには閉まって、通らないときには開いているものは何？ ,notzatsudan
+一番有名なロック歌手は誰ですか？      ,notzatsudan
+ドリアの作り方はどうやりますか？      ,notzatsudan
+宇宙で人は生きれますか？  ,notzatsudan
+一番安い携帯プランは何ですか,notzatsudan
+上野に幼稚園は何個ありますか,notzatsudan
+京都で旅行で宿泊する場所はいくつありますか？,notzatsudan
+新宿の公衆トイレの場所はどこですか？    ,notzatsudan
+ハイヒールで踏まれたらどうなりますか？   ,notzatsudan
+１８禁って何ですか？    ,notzatsudan
+今流行っている曲って何？  ,notzatsudan
+FUJI ROCK FES っていつだっけ？,notzatsudan
+宇宙に行きたいなぁ     ,zatsudan
+カツラをつけてみたいです。 ,zatsudan
+結婚してください      ,notzatsudan
+どんな家に住んでいるの？  ,zatsudan
+オムライスの作り方教えて。 ,notzatsudan
+あの上司むかつくよね    ,zatsudan
+新宿から渋谷までの電車賃っていくらですか？ ,notzatsudan
+東京から大阪までの交通手段教えて？     ,notzatsudan
+ビールがおいしい季節だよね ,zatsudan
+社長ってサラリーマンの成れの果てだよね   ,zatsudan
+昨日の終値は上がった？   ,notzatsudan
