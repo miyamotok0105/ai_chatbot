@@ -3,19 +3,18 @@
 #
 #
 #pip install mecab-python3
-#python3 or 2 ??
+#python3
 
 import chainer
 import chainer.functions as F
 import chainer.links as L
-from chainer import optimizers
+from chainer import optimizers, cuda, serializers
 import numpy as np
 import sys
 import codecs
 import sqlite3
 import MeCab
 
-sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 
 def to_words(sentence):
         """
@@ -38,25 +37,23 @@ def to_words(sentence):
                 words.append(info_elems[0][:-3])
                 continue
             words.append(info_elems[6])
-        return tuple(words)
+        return list(words)
 
-def make_input_output_vocab_dict():
+def make_input_output_vocab_splited():
 
     dbname = '../chat_data/conversation.db'
-    input_vocab_list = ["<start>"]
+    input_vocab_list = []
     output_vocab_list = []
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    conversation_pairs = conn.execute("select * from conversation_pair limit 10").fetchall()
+    conversation_pairs = conn.execute("select * from conversation_pair").fetchall()
     for convs in conversation_pairs:
         input_vocab_list.append(convs[2])
         output_vocab_list.append(convs[4])
-        print "talk1: %s, talk2: %s" % (convs[2], convs[4])
+        # print("talk1: %s, talk2: %s" % (convs[2], convs[4]))
     conn.close()
 
-    input_vocab_list.append("<eos>")
-    output_vocab_list.append("<eos>")
     return input_vocab_list, output_vocab_list
 
 def make_vocab_dict(vocab):
@@ -65,6 +62,8 @@ def make_vocab_dict(vocab):
     for id, word in enumerate(vocab):
         id2word[id] = word
         word2id[word] = id
+        print("id:",id)
+        print("word:",word)
     return id2word, word2id
 
 
@@ -81,8 +80,11 @@ class Seq2Seq(chainer.Chain):
         """
         self.id2word_input, self.word2id_input = make_vocab_dict(input_vocab)
         self.id2word_output, self.word2id_output = make_vocab_dict(output_vocab)
-        self.input_vocab_size = len(self.word2id_input)
-        self.output_vocab_size = len(self.word2id_output)
+        self.input_vocab_size = len(self.id2word_input)
+        self.output_vocab_size = len(self.id2word_output)
+
+        print("seq in:",self.input_vocab_size)
+        print("seq out:",self.output_vocab_size)
 
         super(Seq2Seq, self).__init__(
                 # encoder
@@ -154,77 +156,73 @@ class Seq2Seq(chainer.Chain):
 
 if __name__ == "__main__":
 
-    tagger = MeCab.tagger('mecabrc')
-    text = u'MeCabで遊んでみよう！'
-    mecab_result = tagger.parse(text)
-    print mecab_result
 
-    # text = u'MeCabで遊んでみよう！'
+    input_vocab_list, output_vocab_list = make_input_output_vocab_splited()
 
-    # print to_words(text.encode('utf-8'))
-    # input_vocab_list, output_vocab_list = make_input_output_vocab_dict()
 
+    # input_output_vocab_splited_list = ["<start>"]
+    # output_output_vocab_splited_list = []
 
     # for input_vocab in input_vocab_list:
-    #     print "11:", input_vocab
-    #     # print to_words(input_vocab)
-
-    ここでmecabのエラーが出てる！！！！
-
-    # input_vocab = ["<start>"]
-    # output_vocab = []
-
-    # conn = sqlite3.connect(dbname)
-    # c = conn.cursor()
-    # conversation_pairs = conn.execute("select * from conversation_pair ").fetchall()
-    # for convs in conversation_pairs:
-    #     input_vocab.append(convs[2])
-    #     output_vocab.append(convs[4])
-    #     print "talk1: %s, talk2: %s" % (convs[2], convs[4])
-    # conn.close()
+    #     print(to_words(input_vocab))
 
     # input_vocab.append("<eos>")
     # output_vocab.append("<eos>")
 
+    for (input_vocab, output_vocab) in zip(input_vocab_list, output_vocab_list):
 
-    # input_vocab = ["<start>", u"黄昏に", u"天使の声", u"響く時，", u"聖なる泉の前にて", u"待つ", "<eos>"]
-    # output_vocab = [u"5時に", u"噴水の前で", u"待ってます", "<eos>"]
 
-    # model = Seq2Seq(input_vocab, output_vocab, feature_num=4, hidden_num=10)
+        input_vocab = to_words(input_vocab)
+        input_vocab.insert(0, "<start>")
+        input_vocab.append("<eos>")
+        # print(input_vocab)
 
-    # optimizer = optimizers.SGD()
-    # optimizer.setup(model)
+        output_vocab = to_words(output_vocab)
+        output_vocab.append("<eos>")
+        # print(output_vocab)
+        print("in:",len(input_vocab),"out:",len(output_vocab))
 
-    # for _ in range(20000):
+        # input_vocab = ["<start>", "黄昏に", "天使の声", "響く時，", "聖なる泉の前にて", "待つ", "<eos>"]
+        # output_vocab = ["5時に", "噴水の前で", "待ってます", "<eos>"]
 
-    #     model.initialize()
-    #     # reverse すると収束が早くなる
-    #     input = [model.word2id_input[word] for word in reversed(input_vocab)]
+        model = Seq2Seq(input_vocab, output_vocab, feature_num=4, hidden_num=10)
 
-    #     context = model.encode(input, train=True)
-    #     acc_loss = 0
+        optimizer = optimizers.SGD()
+        optimizer.setup(model)
 
-    #     for word in output_vocab:
-    #         id = model.word2id_output[word]
-    #         loss, context = model.decode(context, id, train=True)
-    #         acc_loss += loss
+        for _ in range(20):
 
-    #     model.zerograds()
-    #     acc_loss.backward()
-    #     acc_loss.unchain_backward()
-    #     optimizer.update()
-    #     start = model.word2id_input["<start>"]
-    #     sentence = model.generate(start, 7)
+            model.initialize()
+            # reverse すると収束が早くなる
+            input = [model.word2id_input[word] for word in reversed(input_vocab)]
+            print("1:",input)
+            context = model.encode(input, train=True)
+            acc_loss = 0
 
-    #     print "teacher : ", "".join(input_vocab[1:6])
-    #     print "-> ", sentence
-    #     print
+            for word in output_vocab:
+                id = model.word2id_output[word]
+                loss, context = model.decode(context, id, train=True)
+                acc_loss += loss
+
+            model.zerograds()
+            acc_loss.backward()
+            acc_loss.unchain_backward()
+            optimizer.update()
+            start = model.word2id_input["<start>"]
+            # sentence = model.generate(start, 7)
+
+            # print("teacher : ", "".join(input_vocab[1:6]))
+            # print("-> ", sentence)
+            sentence = model.generate(start, len(input_vocab))
+
+            print("teacher : ", "".join(input_vocab[1:len(input_vocab)-1]))
+            print("-> ", sentence)
 
 
 
     # #modelとoptimizerを保存---------------------------------------------
-    # print ('save the model')
-    # serializers.save_npz('s2s.model', model)
-    # print ('save the optimizer')
-    # serializers.save_npz('s2s.state', optimizer)
+    print ('save the model')
+    serializers.save_hdf5('s2s.model', model)
+    print ('save the optimizer')
+    serializers.save_hdf5('s2s.state', optimizer)
 
