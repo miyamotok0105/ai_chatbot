@@ -52,7 +52,7 @@ def make_input_vocab_splited():
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    conversation_pairs = conn.execute("select * from conversation_pair limit 1").fetchall()
+    conversation_pairs = conn.execute("select * from conversation_pair limit 10").fetchall()
     for convs in conversation_pairs:
         input_vocab_list.append(convs[2])
         output_vocab_list.append(convs[4])
@@ -82,23 +82,24 @@ def input_word_list(filename):
 
     input_vocab_list = make_input_vocab_splited()
 
-    for vocab in input_vocab_list:
-        yield to_words(vocab)
+    for vocab_list in input_vocab_list:
+        # print("vocab_list",vocab_list)
+        yield to_words(vocab_list)
 
 def output_word_list(filename):
 
     output_vocab_list = make_output_vocab_splited()
 
-    for vocab in output_vocab_list:
-        yield to_words(vocab)
+    for vocab_list in output_vocab_list:
+        yield to_words(vocab_list)
 
 
-# def word_list(filename):
-#     with open(filename) as fp:
-#         for l in fp:
-#             yield l.split()
+def word_list(filename):
+    with open(filename) as fp:
+        for l in fp:
+            yield l.split()
 
-# def letter_list(filename):
-#     with open(filename) as fp:
-#         for l in fp:
-#             yield list(''.join(l.split()))
+def letter_list(filename):
+    with open(filename) as fp:
+        for l in fp:
+            yield list(''.join(l.split()))

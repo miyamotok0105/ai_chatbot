@@ -218,6 +218,10 @@ def train(args):
   src_vocab = Vocabulary.new(gens.input_word_list(args.source), args.vocab)
   trg_vocab = Vocabulary.new(gens.output_word_list(args.target), args.vocab)
 
+  # print(type(gens.input_word_list(args.source)))
+  # for w in gens.input_word_list(args.source):
+  #   print("w is :",w)
+
   trace('making model ...')
   encdec = EncoderDecoder(args.vocab, args.embed, args.hidden)
   if args.use_gpu:
@@ -260,6 +264,7 @@ def train(args):
 
   trace('finished.')
 
+#chat形式に変更。ここの関数名をchatに変更予定
 def test(args):
   trace('loading model ...')
   src_vocab = Vocabulary.load(args.model + '.srcvocab')
@@ -272,23 +277,60 @@ def test(args):
   trace('generating translation ...')
   generated = 0
 
-  with open(args.target, 'w') as fp:
-    for src_batch in gens.batch(gens.input_word_list(args.source), args.minibatch):
-      src_batch = fill_batch(src_batch)
-      K = len(src_batch)
-      print(src_batch)
+  #ここを入力できるようにすれば出来上がり。
+  src_batch = [['私は', '太郎', 'です', '(´', 'ー', '｀*)', 'ｳﾝｳﾝ', '</s>']]
+  src_batch = fill_batch(src_batch)
+  print("src_batch:",src_batch)
+  K = len(src_batch)
 
-      trace('sample %8d - %8d ...' % (generated + 1, generated + K))
-      hyp_batch = forward(src_batch, None, src_vocab, trg_vocab, encdec, False, args.generation_limit)
-      print(hyp_batch)
-      for hyp in hyp_batch:
-        hyp.append('</s>')
-        hyp = hyp[:hyp.index('</s>')]
-        print(' '.join(hyp), file=fp)
+  trace('sample %8d - %8d ...' % (generated + 1, generated + K))
+  print("question:")
+  for srp in src_batch:
+    srp.append('</s>')
+    srp = srp[:srp.index('</s>')]
+    print(''.join(srp))
 
-      generated += K
+  hyp_batch = forward(src_batch, None, src_vocab, trg_vocab, encdec, False, args.generation_limit)
+  print("answser:")
+  for hyp in hyp_batch:
+    hyp.append('</s>')
+    hyp = hyp[:hyp.index('</s>')]
+    print(''.join(hyp))
+  print("----------------")
+
+  generated += K
 
   trace('finished.')
+
+# def test(args):
+#   trace('loading model ...')
+#   src_vocab = Vocabulary.load(args.model + '.srcvocab')
+#   trg_vocab = Vocabulary.load(args.model + '.trgvocab')
+#   encdec = EncoderDecoder.load_spec(args.model + '.spec')
+#   if args.use_gpu:
+#     encdec.to_gpu()
+#   serializers.load_hdf5(args.model + '.weights', encdec)
+  
+#   trace('generating translation ...')
+#   generated = 0
+
+#   with open(args.target, 'w') as fp:
+#     for src_batch in gens.batch(gens.input_word_list(args.source), args.minibatch):
+#       src_batch = fill_batch(src_batch)
+#       K = len(src_batch)
+#       print(src_batch)
+
+#       trace('sample %8d - %8d ...' % (generated + 1, generated + K))
+#       hyp_batch = forward(src_batch, None, src_vocab, trg_vocab, encdec, False, args.generation_limit)
+#       print(hyp_batch)
+#       for hyp in hyp_batch:
+#         hyp.append('</s>')
+#         hyp = hyp[:hyp.index('</s>')]
+#         print(' '.join(hyp), file=fp)
+
+#       generated += K
+
+#   trace('finished.')
 
 def main():
   args = parse_args()

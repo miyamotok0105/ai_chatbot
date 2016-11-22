@@ -1,3 +1,7 @@
+#python mt_s2s_attention.py train ../seq2seq_one_layer/data/jp.txt ../seq2seq_one_layer/data/eng.txt ./models/out
+#python mt_s2s_attention.py test ../seq2seq_one_layer/data/jp.txt ../seq2seq_one_layer/data/eng.txt ./models/out.010
+
+
 import sys
 import numpy
 from argparse import ArgumentParser
@@ -11,7 +15,7 @@ def parse_args():
   def_vocab = 1000
   def_embed = 100
   def_hidden = 200
-  def_epoch = 10
+  def_epoch = 100
   def_minibatch = 64
   def_generation_limit = 128
 
@@ -602,6 +606,9 @@ def test(args):
   trace('loading model ...')
   src_vocab = Vocabulary.load(args.model + '.srcvocab')
   trg_vocab = Vocabulary.load(args.model + '.trgvocab')
+  print("src vocab:",src_vocab.itos)
+  print("trg vocab:",trg_vocab.itos)
+
   attmt = AttentionMT.load_spec(args.model + '.spec')
   if args.use_gpu:
     attmt.to_gpu()
@@ -614,9 +621,11 @@ def test(args):
     for src_batch in gens.batch(gens.word_list(args.source), args.minibatch):
       src_batch = fill_batch(src_batch)
       K = len(src_batch)
+      print("question:",src_batch)
 
       trace('sample %8d - %8d ...' % (generated + 1, generated + K))
       hyp_batch = forward(src_batch, None, src_vocab, trg_vocab, attmt, False, args.generation_limit)
+      print("answser:",hyp_batch)
 
       for hyp in hyp_batch:
         hyp.append('</s>')

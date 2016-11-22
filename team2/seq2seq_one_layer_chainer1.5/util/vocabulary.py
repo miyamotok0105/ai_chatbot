@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-
 class Vocabulary:
   def __init__(self):
     pass
@@ -8,9 +7,11 @@ class Vocabulary:
   def __len__(self):
     return self.__size
 
+  #文字列を数値型の値に変換する。
   def stoi(self, s):
     return self.__stoi[s]
 
+  #数値を文字型の値に変換する。
   def itos(self, i):
     return self.__itos[i]
 
@@ -18,6 +19,7 @@ class Vocabulary:
   def new(list_generator, size):
     self = Vocabulary()
     self.__size = size
+    print("size:",self.__size)
 
     word_freq = defaultdict(lambda: 0)
     for words in list_generator:
@@ -52,11 +54,13 @@ class Vocabulary:
       self.__size = int(next(fp))
       self.__stoi = defaultdict(lambda: 0)
       self.__itos = [''] * self.__size
+      print("self.__size:",self.__size)
       for i in range(self.__size):
         s = next(fp).strip()
         if s:
+          print("s:",s)
           self.__stoi[s] = i
           self.__itos[i] = s
     
     return self
-    
+ 
