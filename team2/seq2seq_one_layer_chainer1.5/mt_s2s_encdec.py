@@ -2,10 +2,10 @@
 #
 #useage
 ##train mode
-#python mt_s2s_encdec.py train ../seq2seq_one_layer/data/jp.txt ../seq2seq_one_layer/data/eng.txt ./models/out
+#python mt_s2s_encdec.py train ./models/out
 #
 ##test mode
-#python mt_s2s_encdec.py test ../seq2seq_one_layer/data/jp.txt ../seq2seq_one_layer/data/eng.txt ./models/out.021
+#python mt_s2s_encdec.py test ./models/out.101 --target あなたは男ですか？
 #
 import sys
 import numpy
@@ -18,11 +18,12 @@ import sqlite3
 import MeCab
 
 def parse_args():
+  def_target = ""
   def_gpu_device = 0
-  def_vocab = 1000
+  def_vocab = 10000
   def_embed = 100
   def_hidden = 200
-  def_epoch = 101
+  def_epoch = 1001
   def_minibatch = 64
   def_generation_limit = 128
   def_model_save_timing = 100
@@ -36,9 +37,12 @@ def parse_args():
   )
 
   p.add_argument('mode', help='\'train\' or \'test\'')
-  p.add_argument('source', help='[in] source corpus')
-  p.add_argument('target', help='[in/out] target corpus')
+  # p.add_argument('source', help='[in] source corpus')
+  # p.add_argument('target', help='[in/out] target corpus')
   p.add_argument('model', help='[in/out] model file')
+
+  p.add_argument('--target', default=def_target, metavar='STRING', type=str,
+    help='use target(default: %(default)d)')
   p.add_argument('--use-gpu', action='store_true', default=False,
     help='use GPU calculation')
   p.add_argument('--gpu-device', default=def_gpu_device, metavar='INT', type=int,
@@ -215,23 +219,19 @@ def forward(src_batch, trg_batch, src_vocab, trg_vocab, encdec, is_training, gen
 
 def train(args):
   trace('making vocabularies ...')
-  src_vocab = Vocabulary.new(gens.input_word_list(args.source), args.vocab)
-  trg_vocab = Vocabulary.new(gens.output_word_list(args.target), args.vocab)
-
-  # print(type(gens.input_word_list(args.source)))
-  # for w in gens.input_word_list(args.source):
-  #   print("w is :",w)
-
+  src_vocab = Vocabulary.new(gens.input_word_list(), args.vocab)
+  trg_vocab = Vocabulary.new(gens.output_word_list(), args.vocab)
   trace('making model ...')
   encdec = EncoderDecoder(args.vocab, args.embed, args.hidden)
+
   if args.use_gpu:
     encdec.to_gpu()
 
   for epoch in range(args.epoch):
     trace('epoch %d/%d: ' % (epoch + 1, args.epoch))
     trained = 0
-    gen1 = gens.input_word_list(args.source)
-    gen2 = gens.output_word_list(args.target)
+    gen1 = gens.input_word_list()
+    gen2 = gens.output_word_list()
     gen3 = gens.batch(gens.sorted_parallel(gen1, gen2, 100 * args.minibatch), args.minibatch)
     opt = optimizers.AdaGrad(lr = 0.01)
     opt.setup(encdec)
@@ -266,6 +266,7 @@ def train(args):
 
 #chat形式に変更。ここの関数名をchatに変更予定
 def test(args):
+
   trace('loading model ...')
   src_vocab = Vocabulary.load(args.model + '.srcvocab')
   trg_vocab = Vocabulary.load(args.model + '.trgvocab')
@@ -277,8 +278,11 @@ def test(args):
   trace('generating translation ...')
   generated = 0
 
-  #ここを入力できるようにすれば出来上がり。
-  src_batch = [['私は', '太郎', 'です', '(´', 'ー', '｀*)', 'ｳﾝｳﾝ', '</s>']]
+  temp = gens.to_words(args.target)
+  # temp.append("</s>")
+  src_batch = []
+  src_batch.append(temp)
+  # src_batch = [['私は', '太郎', 'です', '(´', 'ー', '｀*)', 'ｳﾝｳﾝ', '</s>']]
   src_batch = fill_batch(src_batch)
   print("src_batch:",src_batch)
   K = len(src_batch)

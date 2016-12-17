@@ -52,7 +52,7 @@ def make_input_vocab_splited():
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    conversation_pairs = conn.execute("select * from conversation_pair limit 10").fetchall()
+    conversation_pairs = conn.execute("select * from conversation_pair limit 20000").fetchall()
     for convs in conversation_pairs:
         input_vocab_list.append(convs[2])
         output_vocab_list.append(convs[4])
@@ -69,7 +69,7 @@ def make_output_vocab_splited():
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    conversation_pairs = conn.execute("select * from conversation_pair limit 10").fetchall()
+    conversation_pairs = conn.execute("select * from conversation_pair limit 200").fetchall()
     for convs in conversation_pairs:
         input_vocab_list.append(convs[2])
         output_vocab_list.append(convs[4])
@@ -78,7 +78,7 @@ def make_output_vocab_splited():
 
     return output_vocab_list
 
-def input_word_list(filename):
+def input_word_list():
 
     input_vocab_list = make_input_vocab_splited()
 
@@ -86,7 +86,7 @@ def input_word_list(filename):
         # print("vocab_list",vocab_list)
         yield to_words(vocab_list)
 
-def output_word_list(filename):
+def output_word_list():
 
     output_vocab_list = make_output_vocab_splited()
 
