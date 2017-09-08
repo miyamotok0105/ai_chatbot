@@ -10,6 +10,10 @@ todo:全体的に整理する。
 
 ## 環境
 
+ubuntu
+
+    sudo apt-get install mecab libmecab-dev mecab-ipadic mecab-ipadic-utf8 python-mecab
+
 mac
 
     brew install mecab
@@ -23,13 +27,16 @@ mac
 
 - 学習
 
-
     cd team2/seq2seq_one_layer_chainer1.5
     python mt_s2s_encdec.py train ./models/out
 
 
-- テスト
+- 学習(fine tuning)
 
+    python mt_s2s_encdec.py train ./models/out --load_model ./models/out.901
+
+
+- テスト
 
     python mt_s2s_encdec.py test ./models/out.101 --target あなたは男ですか？
 

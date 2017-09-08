@@ -5,6 +5,9 @@
 ##train mode
 #python mt_s2s_encdec.py train ./models/out
 #
+##train mode(fine tuning)
+#python mt_s2s_encdec.py train ./models/out --load_model ./models/out.901
+#
 ##test mode
 #python mt_s2s_encdec.py test ./models/out.101 --target あなたは男ですか？
 #
@@ -42,6 +45,8 @@ def parse_args():
   # p.add_argument('target', help='[in/out] target corpus')
   p.add_argument('model', help='[in/out] model file')
 
+  p.add_argument('--load_model', default="./models/out.101", metavar='STRING', type=str,
+    help='')
   p.add_argument('--target', default=def_target, metavar='STRING', type=str,
     help='use target(default: %(default)d)')
   p.add_argument('--use-gpu', action='store_true', default=False,
@@ -224,6 +229,13 @@ def train(args):
   trg_vocab = Vocabulary.new(gens.output_word_list(), args.vocab)
   trace('making model ...')
   encdec = EncoderDecoder(args.vocab, args.embed, args.hidden)
+
+  if args.load_model != "":
+    print("model load  %s ... "%(args.load_model))
+    src_vocab = Vocabulary.load(args.load_model + '.srcvocab')
+    trg_vocab = Vocabulary.load(args.load_model + '.trgvocab')
+    encdec = EncoderDecoder.load_spec(args.load_model + '.spec')
+    serializers.load_hdf5(args.load_model + '.weights', encdec)
 
   if args.use_gpu:
     encdec.to_gpu()
