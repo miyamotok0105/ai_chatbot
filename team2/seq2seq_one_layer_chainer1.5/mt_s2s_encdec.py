@@ -1,5 +1,6 @@
 #
 #
+#
 #useage
 ##train mode
 #python mt_s2s_encdec.py train ./models/out
