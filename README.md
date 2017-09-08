@@ -23,9 +23,14 @@ mac
 
 - 学習
 
+    
     cd team2/seq2seq_one_layer_chainer1.5
     python mt_s2s_encdec.py train ./models/out
 
+
 - テスト
 
+    
     python mt_s2s_encdec.py test ./models/out.101 --target あなたは男ですか？
+    
+    
